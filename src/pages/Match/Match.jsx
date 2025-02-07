@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Nav from "../../components/Nav/Nav";
 
 const API_BASE = "https://frontend-take-home-service.fetch.com";
 
 const Match = () => {
   const [matchedDog, setMatchedDog] = useState(null);
-  const [loading, setLoading] = useState(true); // Add loading state
-  const [error, setError] = useState(null);       // Add error state
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);       
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,8 +15,8 @@ const Match = () => {
     if (favorites && favorites.length > 0) {
       const dogIds = favorites.map(dog => dog.id);
 
-      setLoading(true); // Set loading to true before fetching
-      setError(null);    // Clear any previous errors
+      setLoading(true);
+      setError(null);    
 
       fetch(`${API_BASE}/dogs/match`, {
         method: "POST",
@@ -39,26 +40,28 @@ const Match = () => {
             })
             .catch(err => {
               console.error("Error fetching dog details:", err);
-              setError("Error fetching dog details. Please try again later."); // Set error message
+              setError("Error fetching dog details. Please try again later.");
             })
-            .finally(() => setLoading(false)); // Set loading to false after fetch, regardless of success/failure
+            .finally(() => setLoading(false));
         })
         .catch(err => {
           console.error("Error fetching match:", err);
-          setError("Error fetching match. Please try again later."); // Set error message
-          setLoading(false); // Also set loading to false in outer catch
+          setError("Error fetching match. Please try again later."); 
+          setLoading(false); 
         });
     } else {
-      setLoading(false); // If no favorites, no need to fetch, just set loading to false
+      setLoading(false); 
     }
   }, []);
 
   return (
-    <div>
+    <>
+      <Nav />
+
       <h2>Your Matched Dog</h2>
 
-      {loading && <p>Loading...</p>} {/* Display loading message */}
-      {error && <p style={{ color: "red" }}>{error}</p>} {/* Display error message */}
+      {loading && <p>Loading...</p>} 
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
       {matchedDog ? (
         <div>
@@ -67,14 +70,13 @@ const Match = () => {
           <p><strong>Breed:</strong> {matchedDog.breed}</p>
           <p><strong>Age:</strong> {matchedDog.age}</p>
           <p><strong>Zip Code:</strong> {matchedDog.zip_code}</p>
-          {/* ... other dog details ... */}
+          
         </div>
-      ) : (!loading && !error) ? ( // Check for both not loading and no error to display no match message
+      ) : (!loading && !error) ? ( 
         <p>No match found. Please go back and select a dog.</p>
-      ) : null} {/* If loading or error, don't show "no match found" yet */}
-
+      ) : null} 
       <button onClick={() => navigate("/search")}>Go Back</button>
-    </div>
+    </>
   );
 };
 
