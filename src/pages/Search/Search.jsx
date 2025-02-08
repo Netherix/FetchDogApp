@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { fetchBreeds, fetchDogs } from "../../api/fetchAPI";
 import Nav from "../../components/Nav/Nav";
-
-const API_BASE = "https://frontend-take-home-service.fetch.com";
+import DogCards from '../../components/DogCards/DogCards'
 
 const Search = () => {
   const [breeds, setBreeds] = useState([]);
@@ -13,71 +13,41 @@ const Search = () => {
   const [sortOrder, setSortOrder] = useState("asc");
   const navigate = useNavigate();
 
-  const fetchDogs = useCallback(async () => {
-    try {
-      const query = new URLSearchParams({
-        size: 10,
-        from: page * 10,
-        sort: `breed:${sortOrder}`,
-      });
-  
-      if (selectedBreed) query.append("breeds", selectedBreed);
-  
-      const res = await fetch(`${API_BASE}/dogs/search?${query}`, {
-        credentials: "include",
-      });
-  
-      const { resultIds } = await res.json();
-  
-      const detailsRes = await fetch(`${API_BASE}/dogs`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(resultIds),
-      });
-  
-      const dogDetails = await detailsRes.json();
-      setDogs(dogDetails);
-    } catch (error) {
-      console.error("Error fetching dogs:", error);
-    }
-  }, [page, sortOrder, selectedBreed]);
+  console.log(dogs)
 
-  // Load breeds and favorites when the component mounts
   useEffect(() => {
-    // Load breeds
-    fetch(`${API_BASE}/dogs/breeds`, { credentials: "include" })
-      .then((res) => res.json())
-      .then((data) => setBreeds(data))  // Save breeds into state
-      .catch((err) => console.error("Error fetching breeds:", err));
+    const loadBreeds = async () => setBreeds(await fetchBreeds());
+    loadBreeds();
 
-    // Load favorites from localStorage
     const storedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
     setFavorites(storedFavorites);
   }, []);
 
-  // Load dogs based on selected breed and other conditions
+  const loadDogs = useCallback(async () => {
+    setDogs(await fetchDogs(selectedBreed, page, sortOrder));
+  }, [selectedBreed, page, sortOrder]);
+
   useEffect(() => {
-    fetchDogs();
-  }, [selectedBreed, page, sortOrder, fetchDogs]);
+    loadDogs();
+  }, [loadDogs]);
 
   const toggleFavorite = (dog) => {
     setFavorites((prev) => {
       const newFavorites = prev.some((fav) => fav.id === dog.id)
         ? prev.filter((fav) => fav.id !== dog.id)
         : [...prev, dog];
-      localStorage.setItem("favorites", JSON.stringify(newFavorites)); // Save to localStorage immediately
+
+      localStorage.setItem("favorites", JSON.stringify(newFavorites));
       return newFavorites;
     });
   };
 
   const handleMatch = () => {
-    if (favorites.length === 0) {
+    if (!favorites.length) {
       alert("Please select at least one favorite dog.");
       return;
     }
 
-    // Save the matched dog(s) to local storage for retrieval in Match page
     localStorage.setItem("matchedDog", JSON.stringify(favorites));
     navigate("/match");
   };
@@ -90,9 +60,7 @@ const Search = () => {
       <select onChange={(e) => setSelectedBreed(e.target.value)}>
         <option value="">All Breeds</option>
         {breeds.map((breed) => (
-          <option key={breed} value={breed}>
-            {breed}
-          </option>
+          <option key={breed} value={breed}>{breed}</option>
         ))}
       </select>
 
@@ -100,17 +68,11 @@ const Search = () => {
         Sort: {sortOrder === "asc" ? "A-Z" : "Z-A"}
       </button>
 
-      <div>
-        {dogs.map((dog) => (
-          <div key={dog.id}>
-            <img src={dog.img} alt={dog.name} width="150" />
-            <p>{dog.name} ({dog.breed})</p>
-            <button onClick={() => toggleFavorite(dog)}>
-              {favorites.some((fav) => fav.id === dog.id) ? "Remove from Favorites" : "Add to Favorites"}
-            </button>
-          </div>
-        ))}
-      </div>
+      <DogCards
+        dogs={dogs} 
+        favorites={favorites} 
+        toggleFavorite={toggleFavorite} 
+       />
 
       <button onClick={() => setPage((prev) => Math.max(prev - 1, 0))} disabled={page === 0}>
         Previous
@@ -118,9 +80,7 @@ const Search = () => {
       <button onClick={() => setPage((prev) => prev + 1)}>Next</button>
 
       <br />
-      <button onClick={handleMatch} disabled={favorites.length === 0}>
-        Match
-      </button>
+      <button onClick={handleMatch} disabled={!favorites.length}>Match</button>
     </>
   );
 };
