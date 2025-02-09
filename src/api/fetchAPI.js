@@ -4,7 +4,8 @@ const API_BASE = "https://frontend-take-home-service.fetch.com";
 export const fetchBreeds = async () => {
   try {
     const res = await fetch(`${API_BASE}/dogs/breeds`, { credentials: "include" });
-    return res.ok ? await res.json() : [];
+    if (!res.ok) throw new Error("Failed to fetch breeds");
+    return await res.json();
   } catch (error) {
     console.error("Error fetching breeds:", error);
     return [];
@@ -22,15 +23,11 @@ export const fetchDogs = async (selectedBreed, page, sortOrder) => {
 
     if (selectedBreed) query.append("breeds", selectedBreed);
 
-    const res = await fetch(`${API_BASE}/dogs/search?${query}`, {
-      credentials: "include",
-    });
-
+    const res = await fetch(`${API_BASE}/dogs/search?${query}`, { credentials: "include" });
     if (!res.ok) throw new Error("Failed to fetch dog IDs");
 
     const { resultIds } = await res.json();
-
-    return fetchDogDetails(resultIds);
+    return await fetchDogDetails(resultIds);
   } catch (error) {
     console.error("Error fetching dogs:", error);
     return [];
@@ -49,7 +46,8 @@ export const fetchDogDetails = async (dogIds) => {
       body: JSON.stringify(dogIds),
     });
 
-    return res.ok ? await res.json() : [];
+    if (!res.ok) throw new Error("Failed to fetch dog details");
+    return await res.json();
   } catch (error) {
     console.error("Error fetching dog details:", error);
     return [];
@@ -73,8 +71,8 @@ export const fetchMatchedDog = async (favorites) => {
     if (!matchRes.ok) throw new Error("Failed to fetch match");
 
     const { match: matchedDogId } = await matchRes.json();
-
     const matchedDogs = await fetchDogDetails([matchedDogId]);
+
     return matchedDogs.length ? matchedDogs[0] : null;
   } catch (error) {
     console.error("Error fetching match:", error);
@@ -85,10 +83,13 @@ export const fetchMatchedDog = async (favorites) => {
 // Logout function
 export const logout = async () => {
   try {
-    await fetch(`${API_BASE}/auth/logout`, {
+    const res = await fetch(`${API_BASE}/auth/logout`, {
       method: "POST",
       credentials: "include",
     });
+
+    if (!res.ok) throw new Error("Logout failed");
+
     console.log("User logged out successfully");
   } catch (error) {
     console.error("Error logging out:", error);
