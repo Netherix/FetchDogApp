@@ -4,7 +4,11 @@
 
 .nav {
   width: 100vw;
-  background-color: rgb(11, 140, 184);
+  background-image: radial-gradient(
+    100% 100% at 100% 0,
+    #5adaff 0,
+    #5468ff 100%
+  );
   color: white;
   display: flex;
   justify-content: center; /* Centers the nav content, including nav-links */
@@ -13,6 +17,7 @@
   position: fixed;
   top: 0;
   z-index: 1000;
+  min-height: 2rem;
 }
 
 .nav-links {
@@ -23,6 +28,9 @@
   margin: 0;
   list-style: none;
   gap: 2rem;
+}
+
+.nav-links li {
   cursor: pointer;
 }
 
@@ -48,16 +56,12 @@
   left: 0;
   width: 50vw; 
   height: 100vh; 
-  background-color: orange;
+  background-color: rgb(11, 140, 184);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-}
-
-.popup-menu p {
-  color: orange;
 }
 
 .popup-close {
@@ -66,7 +70,7 @@
   top: 20px;
   right: 20px; 
   font-size: 3rem;
-  color: yellow;
+  color: white;
   cursor: pointer;
 }
 
@@ -83,29 +87,18 @@
 .popup-links li {
   margin: 3rem 0;
   font-size: 1.5rem;
-  color: yellow;
+  color: white;
   cursor: pointer;
 }
 
 .popup-links li:hover {
-  background-color: red;
+  background-color: blue;
 }
 
 .cart {
   position: relative;
 }
 
-.cart-count {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background-color: red;
-  color: white;
-  border-radius: 50%;
-  padding: 2px 6px;
-  font-size: 13px;
-  font-weight: bold;
-}
 
 /* Responsive styling */
 @media (max-width: 700px) {
@@ -117,7 +110,4 @@
     display: none;
   }
 
-  .nav .cart {
-    position: relative;
-  }
 }

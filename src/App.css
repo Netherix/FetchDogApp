@@ -1,0 +1,9 @@
+* {
+    font-family: "Comic Sans MS";
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevents horizontal scroll */
+  }

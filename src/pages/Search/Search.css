@@ -1,0 +1,11 @@
+.title {
+    margin-top: 3rem;
+    text-align: center;
+}
+
+.match-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}

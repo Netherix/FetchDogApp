@@ -1,8 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchBreeds, fetchDogs } from "../../api/fetchAPI";
+import "./Search.css";
 import Nav from "../../components/Nav/Nav";
-import DogCards from '../../components/DogCards/DogCards'
+import DogCards from "../../components/DogCards/DogCards";
+import Pagination from "../../components/Pagination/Pagination";
+import Sorting from "../../components/Sorting/Sorting";
+import Button from "../../components/Button/Button";
 
 const Search = () => {
   const [breeds, setBreeds] = useState([]);
@@ -12,8 +16,6 @@ const Search = () => {
   const [page, setPage] = useState(0);
   const [sortOrder, setSortOrder] = useState("asc");
   const navigate = useNavigate();
-
-  console.log(dogs)
 
   useEffect(() => {
     const loadBreeds = async () => setBreeds(await fetchBreeds());
@@ -54,33 +56,35 @@ const Search = () => {
 
   return (
     <>
-      <Nav />
-      <h2>Search for Dogs</h2>
+      <Nav handleMatch={handleMatch} />
+      <h2 className="title">🐶 Explore The Cutest Doggies! 🐶</h2>
 
-      <select onChange={(e) => setSelectedBreed(e.target.value)}>
-        <option value="">All Breeds</option>
-        {breeds.map((breed) => (
-          <option key={breed} value={breed}>{breed}</option>
-        ))}
-      </select>
+      <Sorting
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+        breeds={breeds}
+        selectedBreed={selectedBreed}
+        setSelectedBreed={setSelectedBreed}
+      />
 
-      <button onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}>
-        Sort: {sortOrder === "asc" ? "A-Z" : "Z-A"}
-      </button>
+<Pagination page={page} setPage={setPage} />
+
+      <div className="match-container">
+        <h2>Find Your Perfect Match:</h2>
+        <Button
+          text="Match"
+          onClick={handleMatch}
+          disabled={!favorites.length}
+        />
+      </div>
 
       <DogCards
-        dogs={dogs} 
-        favorites={favorites} 
-        toggleFavorite={toggleFavorite} 
-       />
+        dogs={dogs}
+        favorites={favorites}
+        toggleFavorite={toggleFavorite}
+      />
 
-      <button onClick={() => setPage((prev) => Math.max(prev - 1, 0))} disabled={page === 0}>
-        Previous
-      </button>
-      <button onClick={() => setPage((prev) => prev + 1)}>Next</button>
-
-      <br />
-      <button onClick={handleMatch} disabled={!favorites.length}>Match</button>
+      
     </>
   );
 };

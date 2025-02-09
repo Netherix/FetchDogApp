@@ -1,25 +1,26 @@
 import PropTypes from "prop-types";
-import "./DogCards.css"
+import "./DogCards.css";
+import Button from "../Button/Button";
 
 const DogCards = ({ dogs, favorites, toggleFavorite }) => {
   return (
-    <>
-      <div>
-        {dogs.map((dog) => (
-          <div key={dog.id}>
-            <img src={dog.img} alt={dog.name} width="150" />
-            <p>
-              {dog.name} ({dog.breed})
-            </p>
-            <button onClick={() => toggleFavorite(dog)}>
-              {favorites.some((fav) => fav.id === dog.id)
-                ? "Remove from Favorites"
-                : "Add to Favorites"}
-            </button>
-          </div>
-        ))}
-      </div>
-    </>
+    <div className="dog-cards-container">
+      {dogs.map((dog) => (
+        <div className="dog-card" key={dog.id}>
+          <img src={dog.img} alt={dog.name} width="150" />
+          <p>{dog.name}</p>
+          <p>({dog.breed})</p>
+          <Button
+            text={
+              favorites.some((fav) => fav.id === dog.id)
+                ? "Remove Favorite"
+                : "Add Favorite"
+            }
+            onClick={() => toggleFavorite(dog)}
+          />
+        </div>
+      ))}
+    </div>
   );
 };
 

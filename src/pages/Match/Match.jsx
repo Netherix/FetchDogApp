@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchMatchedDog } from "../../api/fetchAPI";
 import Nav from "../../components/Nav/Nav";
+import Button from "../../components/Button/Button";
 
 const Match = () => {
   const [matchedDog, setMatchedDog] = useState(null);
@@ -33,16 +34,24 @@ const Match = () => {
       {matchedDog ? (
         <div>
           <img src={matchedDog.img} alt={matchedDog.name} width="200" />
-          <p><strong>Name:</strong> {matchedDog.name}</p>
-          <p><strong>Breed:</strong> {matchedDog.breed}</p>
-          <p><strong>Age:</strong> {matchedDog.age}</p>
-          <p><strong>Zip Code:</strong> {matchedDog.zip_code}</p>
+          <p>
+            <strong>Name:</strong> {matchedDog.name}
+          </p>
+          <p>
+            <strong>Breed:</strong> {matchedDog.breed}
+          </p>
+          <p>
+            <strong>Age:</strong> {matchedDog.age}
+          </p>
+          <p>
+            <strong>Zip Code:</strong> {matchedDog.zip_code}
+          </p>
         </div>
-      ) : (!loading && !error) ? (
+      ) : !loading && !error ? (
         <p>No match found. Please go back and select a dog.</p>
       ) : null}
 
-      <button onClick={() => navigate("/search")}>Go Back</button>
+      <Button text="Go Back" onClick={() => navigate("/search")} />
     </>
   );
 };

@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import "./App.css"
 import LogIn from "./pages/LogIn/LogIn";
 import LogOut from "./pages/LogOut/LogOut";
 import Search from "./pages/Search/Search";

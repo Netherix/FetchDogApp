@@ -19,8 +19,7 @@ const Favorites = () => {
   return (
     <>
       <Nav />
-
-      <h2>Favorites</h2>
+      <h2 className="title">❤️ Favorite Dogs ❤️</h2>
       {favorites.length === 0 ? (
         <p>No favorite dogs yet.</p>
       ) : (
