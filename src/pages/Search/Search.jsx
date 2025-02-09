@@ -56,7 +56,7 @@ const Search = () => {
 
   return (
     <>
-      <Nav handleMatch={handleMatch} />
+      <Nav />
       <h2 className="title">🐶 Explore The Cutest Doggies! 🐶</h2>
 
       <Sorting

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { fetchMatchedDog } from "../../api/fetchAPI";
 import Nav from "../../components/Nav/Nav";
 import Button from "../../components/Button/Button";
+import "./Match.css";
 
 const Match = () => {
   const [matchedDog, setMatchedDog] = useState(null);
@@ -26,32 +27,35 @@ const Match = () => {
   return (
     <>
       <Nav />
-      <h2>Your Matched Dog</h2>
+      <h2 className="title">Your Matched Dog</h2>
 
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       {matchedDog ? (
-        <div>
+        <div className="matched-dog-container">
           <img src={matchedDog.img} alt={matchedDog.name} width="200" />
-          <p>
-            <strong>Name:</strong> {matchedDog.name}
-          </p>
-          <p>
-            <strong>Breed:</strong> {matchedDog.breed}
-          </p>
-          <p>
-            <strong>Age:</strong> {matchedDog.age}
-          </p>
-          <p>
-            <strong>Zip Code:</strong> {matchedDog.zip_code}
-          </p>
+          <div className="matched-dog-text">
+            {" "}
+            <p>
+              <strong>Name:</strong> {matchedDog.name}
+            </p>
+            <p>
+              <strong>Breed:</strong> {matchedDog.breed}
+            </p>
+            <p>
+              <strong>Age:</strong> {matchedDog.age}
+            </p>
+            <p>
+              <strong>Zip Code:</strong> {matchedDog.zip_code}
+            </p>
+          </div>
+
+          <Button text="Go Back" onClick={() => navigate("/search")} />
         </div>
       ) : !loading && !error ? (
         <p>No match found. Please go back and select a dog.</p>
       ) : null}
-
-      <Button text="Go Back" onClick={() => navigate("/search")} />
     </>
   );
 };
